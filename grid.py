@@ -36,6 +36,7 @@ class Grid:
     # Insert a Tile in an Empty Cell
     def insertTile(self, pos, value):
         self.setCellValue(pos, value)
+        return pos
 
     def setCellValue(self, pos, value):
         self.map[pos[0]][pos[1]] = value
