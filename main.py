@@ -327,6 +327,8 @@ class Game:
                                              i * (self.cell_width + self.space) + self.space + self.height),
                                             self.g.map[i][j],
                                             self.cell_width, self.guijiao)
+                else:
+                    self.grids[i][j] = None
 
     def add_new_tile(self):
         if random.random() < 0.9:
@@ -480,6 +482,7 @@ class Game:
                 self.ai_button.bg_color = (143, 122, 101)
 
             if not self.g.canMove():
+                self.flag.set()
                 self.LOSE = True
             if self.AI:
                 if not self.qg.empty():
@@ -495,7 +498,7 @@ class Game:
 
             if self.LOSE:
                 self.counter += 1
-                if self.counter >= 60:
+                if self.counter >= 120:
                     self.counter = 0
                     self.reset()
 
@@ -556,8 +559,12 @@ class Game:
                         if self.grids[i][j]:
                             self.grids[i][j].draw(self.screen)
         if self.LOSE:
-            pass
-            # pygame.draw.rect(self.screen, (125, 125, 125, 255), (0, self.height, self.width, self.width))
+            self.lose_img = pygame.Surface((self.width, self.width), pygame.SRCALPHA)
+            pygame.draw.rect(self.lose_img, (140, 140, 125), (0, 0, self.width, self.width))
+            lose_text = self.f.render('You Lose', True, (255, 255, 255), (140, 140, 125))
+            self.lose_img.blit(lose_text, (self.width // 2 - lose_text.get_width() // 2, self.width // 2 - lose_text.get_height() // 2))
+            self.lose_img.set_alpha(min(150, self.counter * 5))
+            self.screen.blit(self.lose_img, (0, self.height))
 
         score = self.f.render(str(self.g.score), True, (255, 255, 255), (187, 173, 160))
         text = self.f_s.render("score", True, (236, 224, 212), (187, 173, 160))
